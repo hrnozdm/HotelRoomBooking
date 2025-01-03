@@ -28,6 +28,7 @@ const getRoom = async (req:Request, res:Response) => {
 
 
 const createRoom = async (req:RoomRequest, res:Response) => {
+
    if (req.user?.role !== 'admin') {
        res.status(403).json({message:"Access denied"});
        return;  
@@ -43,4 +44,40 @@ const createRoom = async (req:RoomRequest, res:Response) => {
     }
 }
 
-export {getRooms,getRoom,createRoom};
+
+const updateRoom = async (req:RoomRequest, res:Response) => {
+  if (req.user?.role !== 'admin') {
+      res.status(403).json({message:"Access denied"});
+      return;  
+  }
+
+  try {
+    const {type,number}=req.body;
+    const room=await Room.findByIdAndUpdate({_id:req.params.id},{type, number},{new:true});
+    res.json({message:"Room updated successfully",room});
+  } catch (error) {
+    res.status(400).json({message:"Error updating room"});
+  }
+
+};
+
+const deleteRoom = async (req:RoomRequest, res:Response) => {
+  if (req.user?.role !== 'admin') {
+      res.status(403).json({message:"Access denied"});
+      return;  
+  }
+
+  try {
+    const room=await Room.findByIdAndDelete({_id:req.params.id});
+    if (!room) {
+      res.status(400).json({message:"Room not found"});
+      return;
+    }
+    res.json({message:"Room deleted successfully"});
+  } catch (error) {
+    res.status(400).json({message:"Error deleting room"});
+  }
+
+};
+
+export {getRooms,getRoom,createRoom,updateRoom,deleteRoom};
