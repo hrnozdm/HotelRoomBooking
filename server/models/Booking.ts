@@ -3,7 +3,8 @@ import { Schema, model, Types } from 'mongoose';
 interface IBooking {
     userId: Types.ObjectId | string; 
     roomId: Types.ObjectId | string;
-    date: Date;
+    checkInDate: Date;
+    checkOutDate: Date;
 }
 
 const bookingSchema = new Schema<IBooking>({
@@ -17,10 +18,15 @@ const bookingSchema = new Schema<IBooking>({
         ref: 'Room',
         required: true
     },
-    date: {
+    checkInDate: {
         type: Date,
-        default: Date.now
+        required: true
+    },
+    checkOutDate: {
+        type: Date,
+        required: true
     }
+   
 });
 
 export default model<IBooking>('Booking', bookingSchema);
