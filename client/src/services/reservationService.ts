@@ -10,3 +10,13 @@ export const createReservation = async (roomId: string, checkInDate: string, che
       throw error; 
     }
   };
+
+  export const checkAvailability = async (roomId: string, checkInDate: string, checkOutDate: string) => {
+    try {
+      const response = await api.post('/check-availability', { roomId, checkInDate, checkOutDate });
+      return response.data;
+    } catch (error) {
+      console.error('Müsaitlik kontrolü hatası:', error);
+      throw error;
+    }
+  };

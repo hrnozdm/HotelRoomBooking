@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useRoomStore } from '../../stores/useRoomStore';
 import Reservation from '../reservation/Reservation';
+import { useAuthStore } from '../../stores/useAuthStore';
+import Modal from '../modal/Modal';
 
 
 
 const Rooms: React.FC = () => {
   const { rooms, loading, error, fetchRooms } = useRoomStore();
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const { isLoggedIn } = useAuthStore();
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal durumu
 
   useEffect(() => {
     fetchRooms(); 
@@ -20,9 +24,12 @@ const Rooms: React.FC = () => {
 
   const handleReserve = (roomId: string) => {
     setSelectedRoomId(roomId); 
+    setIsModalOpen(true);
+    
   };
 
   const handleClose = () => {
+    setIsModalOpen(false);
     setSelectedRoomId(null);
   };
 
@@ -33,11 +40,10 @@ const Rooms: React.FC = () => {
           <div className="px-6 py-4">
             <div className="font-bold text-xl mb-2">Oda Tipi: {room.type}</div>
             <p className="text-gray-700 text-base">Oda Numarası: {room.number}</p>
-            <p className="text-gray-700 text-base">Oda ID: {room._id}</p>
             <p className={`text-base ${room.isAvailable ? 'text-green-500' : 'text-red-500'}`}>
               {room.isAvailable ? 'Mevcut' : 'Dolu'}
             </p>
-            {room.isAvailable && (
+            {room.isAvailable &&  isLoggedIn &&(
               <button
                 onClick={() => handleReserve(room._id)}
                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -48,8 +54,15 @@ const Rooms: React.FC = () => {
           </div>
         </div>
       ))}
-      {selectedRoomId && (
-        <Reservation roomId={selectedRoomId} onClose={handleClose} />
+      {!isLoggedIn && (
+        <div className="w-full text-center mt-4">
+          <p className="text-red-500">Rezervasyon yapmak için lütfen giriş yapın.</p>
+        </div>
+      )}
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={handleClose}>
+          {selectedRoomId && <Reservation roomId={selectedRoomId} onClose={handleClose} />}
+        </Modal>
       )}
     </div>
   );

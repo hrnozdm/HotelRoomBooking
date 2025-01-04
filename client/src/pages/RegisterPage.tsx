@@ -1,19 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { register } from "../services/authService";
 import { useState } from "react";
-import { useAuthStore } from "../stores/useAuthStore";
+
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.login); 
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await register(username , password);
-      setAuth(username, password);
       alert('Kayıt başarılı!'); 
       navigate('/login'); 
     } catch (error) {
@@ -21,6 +20,8 @@ const RegisterPage = () => {
       console.error('Kayıt başarısız:', error);
     }
   };
+
+  
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">

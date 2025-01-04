@@ -16,7 +16,8 @@ export const login = async (username: string, password: string) => {
 
 export const register = async (username: string, password: string) => {
   try {
-    const response = await api.post('/auth/register', { username, password });
+    const response = await api.post('/register', { username, password });
+    //console.log('Kayıt response kullanıcı:', response.data);
     return response.data; 
   } catch (error) {
     console.error('Kayıt hatası:', error);

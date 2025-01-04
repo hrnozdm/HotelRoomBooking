@@ -10,11 +10,36 @@ interface BookRequest extends Request {
   };
 }
 
+const checkRoomAvailability = async (req: Request, res: Response) => {
+  const { roomId, checkInDate, checkOutDate } = req.body;
+
+  try {
+    const existingBookings = await Booking.find({
+      roomId,
+      $or: [
+        { checkInDate: { $lt: new Date(checkOutDate), $gte: new Date(checkInDate) } },
+        { checkOutDate: { $gt: new Date(checkInDate), $lte: new Date(checkOutDate) } },
+        { checkInDate: { $lte: new Date(checkInDate) }, checkOutDate: { $gte: new Date(checkOutDate) } }
+      ]
+    });
+
+    if (existingBookings.length > 0) {
+       res.json({ isAvailable: false });
+       return;
+    }
+
+    res.json({ isAvailable: true });
+  } catch (error) {
+    res.status(500).json({ message: "Error checking availability" });
+  }
+};
+
 const bookingRoom = async (req: BookRequest, res: Response) => {
   if (req.user?.role !== "customer") {
     res.status(403).json({ message: "Access denied" });
     return;
   }
+
   try {
     const { roomId,checkInDate,checkOutDate } = req.body;
     
@@ -47,12 +72,12 @@ const bookingRoom = async (req: BookRequest, res: Response) => {
         userId: req.user?.id,
         roomId: room.id,
         checkInDate:checkInDate,
-        checkOutDate:checkOutDate
+        checkOutDate:checkOutDate,
       });
 
     await newBooking.save();
 
-    res.status(200).json({ message: "Room booked successfully", room });
+    res.status(201).json({ message: "Room booked successfully", newBooking,  success: true,room });
   } catch (error) {
     res.status(500).json({ message: "Error booking room" });
   }
@@ -105,4 +130,4 @@ const bookingHistory = async (req: BookRequest, res: Response) => {
   }
 };
 
-export { bookingRoom, cancelBookingRoom, bookingHistory };
+export { bookingRoom, cancelBookingRoom, bookingHistory,checkRoomAvailability };
