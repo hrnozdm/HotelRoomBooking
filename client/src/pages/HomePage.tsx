@@ -1,7 +1,9 @@
+import Room from "../components/rooms/Room"
+
 const HomePage = () => {
   return (
     <div>
-       HomePage
+       <Room/>
     </div>
   )
 }

@@ -34,7 +34,7 @@ const login = async (req:Request, res:Response) => {
         }
 
         const token = jwt.sign({id:user._id,role:user.role},jwtSecret,{expiresIn:'1h'});
-        res.json({token});
+        res.json({token,user});
     } catch (error) {
         res.status(500).json({message:"Error logging in user"});
     }
