@@ -2,11 +2,14 @@ import { create } from "zustand";
 import {login as loginService,logout as logoutService} from "../services/authService";
 
 
+
+
 interface AuthState {
     isLoggedIn: boolean;
     username: string | null;
     login: (username: string, password: string) => Promise<void>;
     logout: () => void;
+    role:string | null;
   }
   
   export const useAuthStore = create<AuthState>((set) => ({
@@ -20,4 +23,5 @@ interface AuthState {
       logoutService();
       set({ isLoggedIn: false, username: null });
     },
+    role:localStorage.getItem('role')
   }));

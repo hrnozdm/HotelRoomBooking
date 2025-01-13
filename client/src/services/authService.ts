@@ -6,7 +6,8 @@ export const login = async (username: string, password: string) => {
     
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('username', response.data.user.username);
-    console.log('Login response:', response.data);
+    localStorage.setItem('role',response.data.user.role);
+    //console.log('Login response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Login error:', error);
@@ -28,6 +29,7 @@ export const register = async (username: string, password: string) => {
 export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
+  
 };
 
 

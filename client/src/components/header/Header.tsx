@@ -2,8 +2,10 @@ import { Link } from "react-router-dom"
 import { useAuthStore } from "../../stores/useAuthStore";
 
 const Header = () => {
-  const { isLoggedIn, username, logout } = useAuthStore();
+  const { isLoggedIn, username, logout,role } = useAuthStore();
 
+  console.log(role);
+  
 
   const handleLogout = () => {
     logout(); 
@@ -19,6 +21,11 @@ const Header = () => {
         <>
           <span>{username}</span>
           <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded">Çıkış Yap</button>
+          {role === 'admin' && (
+            <Link to="/admin/dashboard" className="bg-yellow-500 px-3 py-1 rounded">
+              Dashboard
+            </Link>
+          )}
         </>
       ) : (
         <>

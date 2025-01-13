@@ -8,9 +8,10 @@ import Modal from '../modal/Modal';
 
 const Rooms: React.FC = () => {
   const { rooms, loading, error, fetchRooms } = useRoomStore();
+  const {role} = useAuthStore();
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const { isLoggedIn } = useAuthStore();
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal durumu
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchRooms(); 
@@ -43,7 +44,7 @@ const Rooms: React.FC = () => {
             <p className={`text-base ${room.isAvailable ? 'text-green-500' : 'text-red-500'}`}>
               {room.isAvailable ? 'Mevcut' : 'Dolu'}
             </p>
-            {room.isAvailable &&  isLoggedIn &&(
+            {room.isAvailable &&  isLoggedIn && role!=='admin' &&(
               <button
                 onClick={() => handleReserve(room._id)}
                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"

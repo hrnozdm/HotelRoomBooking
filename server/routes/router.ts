@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { login, register } from "../controller/AuthController";
 import { authenticateJWT } from "../middleware/Auth.middleware";
-import { createRoom, deleteRoom, updateRoom } from "../controller/RoomController";
+import { createRoom, deleteRoom, getRoomTypes, updateRoom } from "../controller/RoomController";
 import { getRooms } from "../controller/RoomController";
 import { bookingHistory, bookingRoom, cancelBookingRoom, checkRoomAvailability } from "../controller/BookingController";
 
@@ -22,6 +22,7 @@ router.get('/booking-history',authenticateJWT,bookingHistory);
 router.put('/update-room/:id',authenticateJWT,updateRoom);
 router.delete('/delete-room/:id',authenticateJWT,deleteRoom);
 router.post("/check-availability", checkRoomAvailability);
+router.get('/room-types',getRoomTypes);
 
 
 export default router;

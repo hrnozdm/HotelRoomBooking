@@ -80,4 +80,11 @@ const deleteRoom = async (req:RoomRequest, res:Response) => {
 
 };
 
-export {getRooms,getRoom,createRoom,updateRoom,deleteRoom};
+
+const getRoomTypes = async (req:RoomRequest,res:Response) => {
+  const roomTypes = ['Basic', 'Premium', 'Suite'];
+  res.status(200).json({ roomTypes });
+}
+
+
+export {getRooms,getRoom,createRoom,updateRoom,deleteRoom,getRoomTypes};
