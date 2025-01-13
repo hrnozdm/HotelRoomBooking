@@ -1,5 +1,6 @@
 import { Request,Response } from "express";
 import Room from "../models/Room";
+import redis from "../config/redisClient";
 
 
 interface RoomRequest extends Request{
@@ -10,7 +11,17 @@ interface RoomRequest extends Request{
 
 const getRooms= async (req:Request, res:Response) => {  
    try {
+     const cachedRooms = await redis.get('rooms');
+     if (cachedRooms) {
+        const rooms = JSON.parse(cachedRooms);
+        //console.log('Redisten alınan veriler',rooms);
+        res.json(rooms);
+        return;
+     }
+
      const rooms = await Room.find();
+
+     await redis.set('rooms',JSON.stringify(rooms),'EX',3600);
      res.json(rooms);
    } catch (error) {
      res.status(500).json({message:"Error getting rooms"});
